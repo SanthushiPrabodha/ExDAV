@@ -1,0 +1,1054 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xml:base="D:\MSc in AI\Research\ExDAV\ontology\exdav.rdf"
+         xmlns="D:\MSc in AI\Research\ExDAV\ontology\exdav.rdf#"
+         xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+         xmlns:swrl2="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#"
+         xmlns:ont.="http://www.co-ode.org/ontologies/ont.owl#">
+
+<owl:Ontology rdf:about="D:\MSc in AI\Research\ExDAV\ontology\exdav.rdf"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#arisesFrom"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#assesses">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#assignedTo"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#containsClaim"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#derivedFrom"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#describes"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#detectedIn"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#detectsConflict">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasClaim">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Claim"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasConflict">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasDrug">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryStatus"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasEvidence">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#EvidenceSource"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasImage">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#DrugImage"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasLabel">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Label"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasLabelElement">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Label"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#LabelElement"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasRegulatoryStatus">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryStatus"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasSource">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#EvidenceSource"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#hasVisualEvidence">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Claim"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#DrugImage"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#isClaimOn"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#isLabelOf"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#isPartOf"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#mayCause"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#producesStatus">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryStatus"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#provides"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#refersToGuideline">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryGuideline"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#support"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#treats">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Disease"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#triggeredBy"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#usedIn"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#usesEvidence">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#violates"/>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#violatesGuideline">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatorySection"/>
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#violatesSection">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Claim"/>
+  <rdfs:range rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatorySection"/>
+</owl:ObjectProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#authenticityClass">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#DrugImage"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#claimText"/>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#claimType"/>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#confidenceScore">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#description"/>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#dosageForm">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#drugName">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#evidenceType">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#imageID">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#DrugImage"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#imagePath">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#DrugImage"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#packageSize">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#pageNumber"/>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#riskScore">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#sectionNumber"/>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#strength">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:DatatypeProperty rdf:about="http://www.co-ode.org/ontologies/ont.owl#verdict">
+  <rdfs:domain rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+  <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+</owl:DatatypeProperty>
+
+<owl:AnnotationProperty rdf:about="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment">
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#hasDrug"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#producesStatus"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryStatus"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#usesEvidence"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Evidence">
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#derivedFrom"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#EvidenceSource"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#support"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Conflict">
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#arisesFrom"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#detectedIn"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Claim">
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#isClaimOn"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#LabelElement"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#mayCause"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryViolation"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#RegulatoryStatus">
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#assignedTo"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#EvidenceSource">
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#provides"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#DrugImage"/>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Label">
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#hasLabelElement"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#LabelElement"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#isLabelOf"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#usedIn"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#LabelElement">
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#containsClaim"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Claim"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#describes"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#isPartOf"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Label"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#RegulatoryGuideline"/>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Disease"/>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#RegulatorySection"/>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Cardiovascular_Disease">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Disease"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#RegulatoryViolation">
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#triggeredBy"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+  <rdfs:subClassOf>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="http://www.co-ode.org/ontologies/ont.owl#violates"/>
+      <owl:someValuesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryRequirement"/>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Compliant">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryStatus"/>
+  <owl:disjointWith rdf:resource="http://www.co-ode.org/ontologies/ont.owl#NonCompliant"/>
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryStatus"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#NonCompliant">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryStatus"/>
+  <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryStatus"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Dermatological_Disease">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Disease"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#NMRA_Advertising_Guideline">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryGuideline"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#NMRA_Import_Control_Guideline">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryGuideline"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#NMRA_Labelling_Guideline">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryGuideline"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#NMRA_Recall_Guideline">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryGuideline"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Pain_and_Fever">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Disease"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#RegulatoryRequirement"/>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Respiratory_Disease">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Disease"/>
+</owl:Class>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Source_Label_Text"/>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Source_Visual_Inspection"/>
+
+<owl:Class rdf:about="http://www.co-ode.org/ontologies/ont.owl#Wound_Care">
+  <rdfs:subClassOf rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Disease"/>
+</owl:Class>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#AA_Paracetamol_001">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AuthenticityAssesment"/>
+  <ont.:hasDrug rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Adol_24_caplets"/>
+  <ont.:producesStatus rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Compliant"/>
+  <ont.:usesEvidence rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict_Visual"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Adol_24_caplets">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:treats rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Pain_and_Fever_Inst"/>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Caplet</ont.:dosageForm>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Adol</ont.:drugName>
+  <ont.:packageSize rdf:datatype="http://www.w3.org/2001/XMLSchema#string">24</ont.:packageSize>
+  <ont.:strength rdf:datatype="http://www.w3.org/2001/XMLSchema#string">500mg</ont.:strength>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Conflict_Visual">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict"/>
+  <ont.:arisesFrom rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence_Visual_Check"/>
+  <ont.:detectedIn rdf:resource="http://www.co-ode.org/ontologies/ont.owl#AA_Paracetamol_001"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Acretin_30g">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:treats rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Dermatological_Disease_Inst"/>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cream</ont.:dosageForm>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Acretin</ont.:drugName>
+  <ont.:packageSize rdf:datatype="http://www.w3.org/2001/XMLSchema#string">30g</ont.:packageSize>
+  <ont.:strength rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.05%</ont.:strength>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Dermatological_Disease_Inst">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Dermatological_Disease"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Pain_and_Fever_Inst"/>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Aggrex_60_tablets">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:treats rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Cardiovascular_Disease_Inst"/>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Tablet</ont.:dosageForm>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Aggrex</ont.:drugName>
+  <ont.:packageSize rdf:datatype="http://www.w3.org/2001/XMLSchema#string">60</ont.:packageSize>
+  <ont.:strength rdf:datatype="http://www.w3.org/2001/XMLSchema#string">75mg</ont.:strength>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Cardiovascular_Disease_Inst"/>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Airoplast_tape">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:treats rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Wound_Care_Inst"/>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Surgical Tape</ont.:dosageForm>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Airoplast</ont.:drugName>
+  <ont.:packageSize rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5cm x 5yd</ont.:packageSize>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Wound_Care_Inst"/>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#AllVent_125ml_syrup">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:treats rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Respiratory_Disease_Inst"/>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Syrup</ont.:dosageForm>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">All-Vent</ont.:drugName>
+  <ont.:packageSize rdf:datatype="http://www.w3.org/2001/XMLSchema#string">125ml</ont.:packageSize>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Respiratory_Disease_Inst"/>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Claim_Fear_Inducing">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Claim"/>
+  <ont.:claimText rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Fear-based or anxiety-inducing messaging encouraging self-diagnosis</ont.:claimText>
+  <ont.:claimType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Social</ont.:claimType>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Claim_General_Misleading">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Claim"/>
+  <ont.:claimText rdf:datatype="http://www.w3.org/2001/XMLSchema#string">False, exaggerated or unverifiable claims violating general principles</ont.:claimText>
+  <ont.:claimType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">General</ont.:claimType>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Claim_Product_Misleading">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Claim"/>
+  <ont.:claimText rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Claims such as 'no side effects', '100% natural', or before-after visuals</ont.:claimText>
+  <ont.:claimType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Product</ont.:claimType>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Claim_Therapeutic_Prohibited">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Claim"/>
+  <ont.:claimText rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Claims to cure or prevent disease without NMRA approval</ont.:claimText>
+  <ont.:claimType rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Therapeutic</ont.:claimType>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Evidence_Visual_Check">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Evidence_Label_Analysis">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#NMRA_ADV_SEC_5">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatorySection"/>
+  <ont.:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">General principles prohibiting false, misleading, exaggerated or unverifiable advertising claims; requires factual accuracy, balance, substantiation, and ethical presentation</ont.:description>
+  <ont.:pageNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</ont.:pageNumber>
+  <ont.:sectionNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</ont.:sectionNumber>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#NMRA_ADV_SEC_6">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatorySection"/>
+  <ont.:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Social responsibility requirements; prohibits fear-based messaging, abuse of public trust, inducement of anxiety, self-diagnosis, misuse of statistics, and psychological manipulation in advertisements</ont.:description>
+  <ont.:pageNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</ont.:pageNumber>
+  <ont.:sectionNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">6</ont.:sectionNumber>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#NMRA_ADV_SEC_7">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatorySection"/>
+  <ont.:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Prohibited therapeutic claims including cure, prevention, diagnosis, immunity, anti-aging, brain enhancement, stress relief, or treatment of specified diseases unless explicitly approved by NMRA</ont.:description>
+  <ont.:pageNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">11</ont.:pageNumber>
+  <ont.:sectionNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">7</ont.:sectionNumber>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#NMRA_ADV_SEC_8">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatorySection"/>
+  <ont.:description rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Product-related claims prohibiting misleading visuals and descriptions such as before-and-after images, false safety claims (e.g., 'no side effects'), improper natural or herbal claims, exaggerated novelty, and over-emphasis on origin</ont.:description>
+  <ont.:pageNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">12</ont.:pageNumber>
+  <ont.:sectionNumber rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">8</ont.:sectionNumber>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#RegulatoryRequirement_Labeling"/>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Violation_Label_NonCompliance">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryViolation"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="http://www.co-ode.org/ontologies/ont.owl#Violation_Misleading_Claim">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryViolation"/>
+  <ont.:triggeredBy rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict_Visual"/>
+  <ont.:violates rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryRequirement_Labeling"/>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#D001">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Acretin</ont.:drugName>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cream</ont.:dosageForm>
+  <ont.:strength rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.05%</ont.:strength>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#D002">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Adol</ont.:drugName>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Caplet</ont.:dosageForm>
+  <ont.:strength rdf:datatype="http://www.w3.org/2001/XMLSchema#string">500mg</ont.:strength>
+  <ont.:packageSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</ont.:packageSize>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#D003">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Aggrex</ont.:drugName>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Tablet</ont.:dosageForm>
+  <ont.:strength rdf:datatype="http://www.w3.org/2001/XMLSchema#string">75mg</ont.:strength>
+  <ont.:packageSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">60</ont.:packageSize>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#D004">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Airoplast</ont.:drugName>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Surgical Tape</ont.:dosageForm>
+  <ont.:strength rdf:datatype="http://www.w3.org/2001/XMLSchema#string">5cm x 5yd</ont.:strength>
+  <ont.:packageSize rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</ont.:packageSize>
+</owl:NamedIndividual>
+
+<owl:NamedIndividual rdf:about="#D005">
+  <rdf:type rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+  <ont.:drugName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">All-Vent</ont.:drugName>
+  <ont.:dosageForm rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Syrup</ont.:dosageForm>
+  <ont.:strength rdf:datatype="http://www.w3.org/2001/XMLSchema#string">nan</ont.:strength>
+</owl:NamedIndividual>
+
+<swrl:Variable rdf:about="http://www.w3.org/2002/07/c"/>
+
+<swrl:Variable rdf:about="http://www.w3.org/2002/07/v"/>
+
+<swrl:Variable rdf:about="http://www.w3.org/2002/07/a"/>
+
+<swrl:Variable rdf:about="http://www.w3.org/2002/07/d"/>
+
+<swrl:Variable rdf:about="http://www.w3.org/2002/07/sec"/>
+
+<swrl:Variable rdf:about="http://www.w3.org/2002/07/e"/>
+
+<swrl:Variable rdf:about="http://www.w3.org/2002/07/s"/>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryViolation"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:IndividualPropertyAtom>
+              <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#triggeredBy"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+              <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/c"/>
+            </swrl:IndividualPropertyAtom>
+          </rdf:first>
+          <rdf:rest>
+            <swrl:AtomList>
+              <rdf:first>
+                <swrl:IndividualPropertyAtom>
+                  <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#detectedIn"/>
+                  <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/c"/>
+                  <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/a"/>
+                </swrl:IndividualPropertyAtom>
+              </rdf:first>
+              <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </swrl:AtomList>
+          </rdf:rest>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:IndividualPropertyAtom>
+          <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#producesStatus"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/a"/>
+          <swrl:argument2 rdf:resource="http://www.co-ode.org/ontologies/ont.owl#NonCompliant"/>
+        </swrl:IndividualPropertyAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Assessment-to-Compliant Rule</rdfs:label>
+</swrl:Imp>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryViolation"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:IndividualPropertyAtom>
+              <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#triggeredBy"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+              <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/c"/>
+            </swrl:IndividualPropertyAtom>
+          </rdf:first>
+          <rdf:rest>
+            <swrl:AtomList>
+              <rdf:first>
+                <swrl:IndividualPropertyAtom>
+                  <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#detectedIn"/>
+                  <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/c"/>
+                  <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/a"/>
+                </swrl:IndividualPropertyAtom>
+              </rdf:first>
+              <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </swrl:AtomList>
+          </rdf:rest>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:IndividualPropertyAtom>
+          <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#assignedTo"/>
+          <swrl:argument1 rdf:resource="http://www.co-ode.org/ontologies/ont.owl#NonCompliant"/>
+          <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/a"/>
+        </swrl:IndividualPropertyAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Violation-to-NonCompliant Rule</rdfs:label>
+</swrl:Imp>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#EvidenceSource"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/s"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:IndividualPropertyAtom>
+              <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#provides"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/s"/>
+              <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/e"/>
+            </swrl:IndividualPropertyAtom>
+          </rdf:first>
+          <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/e"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">EvidenceSource-to-Evidence Rule</rdfs:label>
+</swrl:Imp>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Evidence"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/e"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:IndividualPropertyAtom>
+              <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#arisesFrom"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/c"/>
+              <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/e"/>
+            </swrl:IndividualPropertyAtom>
+          </rdf:first>
+          <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/c"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Evidence-to-Conflict Rule</rdfs:label>
+</swrl:Imp>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/d"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:IndividualPropertyAtom>
+              <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#violatesGuideline"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/d"/>
+              <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/sec"/>
+            </swrl:IndividualPropertyAtom>
+          </rdf:first>
+          <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:IndividualPropertyAtom>
+          <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#hasRegulatoryStatus"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/d"/>
+          <swrl:argument2 rdf:resource="http://www.co-ode.org/ontologies/ont.owl#NonCompliant"/>
+        </swrl:IndividualPropertyAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Infer_Non_Compliance</rdfs:label>
+</swrl:Imp>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/d"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:IndividualPropertyAtom>
+              <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#hasRegulatoryStatus"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/d"/>
+              <swrl:argument2 rdf:resource="http://www.co-ode.org/ontologies/ont.owl#NonCompliant"/>
+            </swrl:IndividualPropertyAtom>
+          </rdf:first>
+          <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:DatavaluedPropertyAtom>
+          <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#verdict"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/d"/>
+          <swrl:argument2 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Suspect – Regulatory Non-Compliance</swrl:argument2>
+        </swrl:DatavaluedPropertyAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Explainable_Suspect_Verdict</rdfs:label>
+</swrl:Imp>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Drug"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/d"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:IndividualPropertyAtom>
+              <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#hasClaim"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/d"/>
+              <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/c"/>
+            </swrl:IndividualPropertyAtom>
+          </rdf:first>
+          <rdf:rest>
+            <swrl:AtomList>
+              <rdf:first>
+                <swrl:IndividualPropertyAtom>
+                  <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#violatesSection"/>
+                  <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/c"/>
+                  <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/sec"/>
+                </swrl:IndividualPropertyAtom>
+              </rdf:first>
+              <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </swrl:AtomList>
+          </rdf:rest>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:IndividualPropertyAtom>
+          <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#violatesGuideline"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/d"/>
+          <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/sec"/>
+        </swrl:IndividualPropertyAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Infer_Regulatory_Violation_From_Claim</rdfs:label>
+</swrl:Imp>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/c"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:IndividualPropertyAtom>
+              <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#triggeredBy"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+              <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/c"/>
+            </swrl:IndividualPropertyAtom>
+          </rdf:first>
+          <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryViolation"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Conflict-to-RegulatoryViolation Rule</rdfs:label>
+</swrl:Imp>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/c"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:IndividualPropertyAtom>
+              <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#detectedIn"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/c"/>
+              <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/a"/>
+            </swrl:IndividualPropertyAtom>
+          </rdf:first>
+          <rdf:rest>
+            <swrl:AtomList>
+              <rdf:first>
+                <swrl:IndividualPropertyAtom>
+                  <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#triggeredBy"/>
+                  <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+                  <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/c"/>
+                </swrl:IndividualPropertyAtom>
+              </rdf:first>
+              <rdf:rest>
+                <swrl:AtomList>
+                  <rdf:first>
+                    <swrl:ClassAtom>
+                      <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryViolation"/>
+                      <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+                    </swrl:ClassAtom>
+                  </rdf:first>
+                  <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                </swrl:AtomList>
+              </rdf:rest>
+            </swrl:AtomList>
+          </rdf:rest>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:IndividualPropertyAtom>
+          <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#producesStatus"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/a"/>
+          <swrl:argument2 rdf:resource="http://www.co-ode.org/ontologies/ont.owl#NonCompliant"/>
+        </swrl:IndividualPropertyAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Violation-to-NonCompliance Rule</rdfs:label>
+</swrl:Imp>
+
+<swrl:Imp>
+  <swrl:body>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:ClassAtom>
+          <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#Conflict"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/c"/>
+        </swrl:ClassAtom>
+      </rdf:first>
+      <rdf:rest>
+        <swrl:AtomList>
+          <rdf:first>
+            <swrl:ClassAtom>
+              <swrl:classPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#RegulatoryViolation"/>
+              <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+            </swrl:ClassAtom>
+          </rdf:first>
+          <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+        </swrl:AtomList>
+      </rdf:rest>
+    </swrl:AtomList>
+  </swrl:body>
+  <swrl:head>
+    <swrl:AtomList>
+      <rdf:first>
+        <swrl:IndividualPropertyAtom>
+          <swrl:propertyPredicate rdf:resource="http://www.co-ode.org/ontologies/ont.owl#triggeredBy"/>
+          <swrl:argument1 rdf:resource="http://www.w3.org/2002/07/v"/>
+          <swrl:argument2 rdf:resource="http://www.w3.org/2002/07/c"/>
+        </swrl:IndividualPropertyAtom>
+      </rdf:first>
+      <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+    </swrl:AtomList>
+  </swrl:head>
+  <swrl2:isRuleEnabled rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</swrl2:isRuleEnabled>
+  <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string"></rdfs:comment>
+  <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Conflict-to-Violation Inference Rule</rdfs:label>
+</swrl:Imp>
+
+<owl:Ontology/>
+
+
+</rdf:RDF>

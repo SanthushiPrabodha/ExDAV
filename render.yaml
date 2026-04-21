@@ -1,0 +1,26 @@
+# Render.com blueprint for the Ex-DAV backend.
+# Deploy with: https://render.com/docs/blueprint-spec
+#
+# This spins up a FREE Python web service running the FastAPI app.
+# The frontend should be deployed separately (Vercel / Netlify / Render
+# static site) and pointed at this service's public URL.
+
+services:
+  - type: web
+    name: exdav-backend
+    runtime: python
+    plan: free
+    region: oregon
+    # System packages from apt.txt (tesseract-ocr) are installed
+    # automatically by Render before the build command runs.
+    buildCommand: "pip install --upgrade pip && pip install -r requirements-deploy.txt"
+    startCommand: "uvicorn backend.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: TESSERACT_CMD
+        value: /usr/bin/tesseract
+      # Optional: restrict CORS once the frontend origin is known.
+      - key: EXDAV_ALLOWED_ORIGINS
+        value: "*"

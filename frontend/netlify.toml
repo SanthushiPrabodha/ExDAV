@@ -1,0 +1,10 @@
+[build]
+  base    = "frontend"
+  command = "npm install && npm run build"
+  publish = "build"
+
+# SPA fallback so React Router routes resolve on refresh / deep links.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

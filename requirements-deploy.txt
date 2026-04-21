@@ -1,0 +1,18 @@
+# Slim runtime requirements for deploying the Ex-DAV FastAPI backend
+# on free hosts (Render, Railway, Fly.io, etc.).
+#
+# The full requirements.txt includes research/training deps (tensorflow,
+# streamlit, owlready2, shap, ...) that the production HTTP API does NOT
+# import. Keeping this file lean is essential for free tiers with tight
+# RAM / disk / build-time quotas.
+
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+
+# OCR stack — use the headless OpenCV wheel (no GUI libs) so the container
+# does not need libGL, libSM, etc.
+opencv-python-headless>=4.9.0
+pytesseract>=0.3.13
+Pillow>=10.0.0
+numpy>=1.26.0

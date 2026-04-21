@@ -243,6 +243,7 @@ function App() {
     try {
       const response = await axios.post(BACKEND_URL, formData, {
         headers: { "Content-Type": "multipart/form-data" },
+        timeout: 180000,
       });
       setResult(response.data);
     } catch (err) {
@@ -250,8 +251,14 @@ function App() {
       if (err.response && err.response.data) {
         const exp = err.response.data.explanation;
         setError(Array.isArray(exp) ? exp.join(" ") : exp || "Backend returned an error.");
+      } else if (err.code === "ECONNABORTED") {
+        setError(
+          "The server took too long to respond. Free-tier hosts sleep after inactivity — please try again in a few seconds."
+        );
       } else {
-        setError("Server not responding. Please start the backend and try again.");
+        setError(
+          "Server not responding. The backend may be waking up from idle — please retry in 30–60 seconds."
+        );
       }
     }
     setLoading(false);

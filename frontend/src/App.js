@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./App.css";
 
@@ -6,6 +6,15 @@ const BACKEND_BASE_URL = (
   process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000"
 ).replace(/\/$/, "");
 const BACKEND_URL = `${BACKEND_BASE_URL}/analyze`;
+const BACKEND_HEALTH_URL = `${BACKEND_BASE_URL}/`;
+
+// Silent warm-up: the hosting tier spins the API down after idle and cold
+// starts can take 30–60s. Pinging on mount means the server is usually
+// ready by the time the user uploads. On the rare miss we auto-retry the
+// analyze call once, so the user never sees infrastructure details.
+const WARMUP_TIMEOUT_MS = 90000;
+const ANALYZE_TIMEOUT_MS = 180000;
+const COLD_START_RETRY_DELAY_MS = 4000;
 
 const VERDICT_META = {
   authentic:    { cls: "verdict-authentic",    icon: "✔", label: "Authentic" },
@@ -213,11 +222,37 @@ function NmraVerifiedSection({ nmra }) {
   );
 }
 
+function isColdStartError(err) {
+  if (!err) return false;
+  if (err.code === "ECONNABORTED") return true;
+  if (!err.response) return true;
+  const s = err.response.status;
+  return s === 502 || s === 503 || s === 504;
+}
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 function App() {
   const [files, setFiles] = useState([]);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const didWarmupRef = useRef(false);
+
+  useEffect(() => {
+    if (didWarmupRef.current) return;
+    didWarmupRef.current = true;
+    // Fire-and-forget: we don't surface success/failure to the user.
+    // If this succeeds the analyze call will be snappy; if it fails
+    // the analyze call's own retry logic will handle it.
+    axios
+      .get(BACKEND_HEALTH_URL, { timeout: WARMUP_TIMEOUT_MS })
+      .catch((err) => {
+        console.warn("Backend warm-up ping failed:", err?.code || err?.message);
+      });
+  }, []);
 
   const handleFileChange = (e) => {
     const selected = Array.from(e.target.files || []);
@@ -228,6 +263,12 @@ function App() {
     setFiles(selected);
     setError("");
   };
+
+  const postAnalyze = (formData) =>
+    axios.post(BACKEND_URL, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      timeout: ANALYZE_TIMEOUT_MS,
+    });
 
   const handleUpload = async () => {
     if (!files.length) {
@@ -241,27 +282,39 @@ function App() {
     setResult(null);
 
     try {
-      const response = await axios.post(BACKEND_URL, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        timeout: 180000,
-      });
+      const response = await postAnalyze(formData);
       setResult(response.data);
     } catch (err) {
-      console.error("FULL ERROR:", err);
-      if (err.response && err.response.data) {
-        const exp = err.response.data.explanation;
-        setError(Array.isArray(exp) ? exp.join(" ") : exp || "Backend returned an error.");
-      } else if (err.code === "ECONNABORTED") {
-        setError(
-          "The server took too long to respond. Free-tier hosts sleep after inactivity — please try again in a few seconds."
-        );
-      } else {
-        setError(
-          "Server not responding. The backend may be waking up from idle — please retry in 30–60 seconds."
-        );
+      if (isColdStartError(err)) {
+        // Silent one-shot retry. The first POST usually warms the server;
+        // by the time this retry runs the real analysis can proceed.
+        console.warn("Analyze retrying after startup signature:", err?.code || err?.response?.status);
+        await sleep(COLD_START_RETRY_DELAY_MS);
+        try {
+          const response = await postAnalyze(formData);
+          setResult(response.data);
+          setLoading(false);
+          return;
+        } catch (retryErr) {
+          console.error("FULL ERROR (after retry):", retryErr);
+          setError(friendlyErrorMessage(retryErr));
+          setLoading(false);
+          return;
+        }
       }
+      console.error("FULL ERROR:", err);
+      setError(friendlyErrorMessage(err));
     }
     setLoading(false);
+  };
+
+  const friendlyErrorMessage = (err) => {
+    if (err?.response?.data) {
+      const exp = err.response.data.explanation;
+      if (exp) return Array.isArray(exp) ? exp.join(" ") : exp;
+      return "We couldn't complete the analysis. Please try again.";
+    }
+    return "We couldn't reach the analysis service. Please check your connection and try again in a moment.";
   };
 
   const vm = result ? getVerdictMeta(result.verdict) : null;

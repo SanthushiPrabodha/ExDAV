@@ -8,13 +8,13 @@ const BACKEND_BASE_URL = (
 const BACKEND_URL = `${BACKEND_BASE_URL}/analyze`;
 const BACKEND_HEALTH_URL = `${BACKEND_BASE_URL}/`;
 
-// Silent warm-up: the hosting tier spins the API down after idle and cold
-// starts can take 30–60s. Pinging on mount means the server is usually
-// ready by the time the user uploads. On the rare miss we auto-retry the
-// analyze call once, so the user never sees infrastructure details.
-const WARMUP_TIMEOUT_MS = 90000;
-const ANALYZE_TIMEOUT_MS = 180000;
-const COLD_START_RETRY_DELAY_MS = 4000;
+// Silent warm-up + cold-start handling for Render free tier.
+// The backend can take 30–90+ seconds to wake up, then run heavy OCR/reasoning.
+// We warm the service on mount; the analyze call retries with a progressive
+// delay so the user never sees infrastructure details.
+const WARMUP_TIMEOUT_MS = 90000;    // health-check timeout
+const ANALYZE_TIMEOUT_MS = 300000;  // single analyze attempt timeout (5 min)
+const MAX_RETRIES = 2;              // up to 2 retries = 3 total attempts
 
 const VERDICT_META = {
   authentic:    { cls: "verdict-authentic",    icon: "✔", label: "Authentic" },
@@ -264,10 +264,10 @@ function App() {
     setError("");
   };
 
-  const postAnalyze = (formData) =>
+  const postAnalyze = (formData, currentTimeout = ANALYZE_TIMEOUT_MS) =>
     axios.post(BACKEND_URL, formData, {
       headers: { "Content-Type": "multipart/form-data" },
-      timeout: ANALYZE_TIMEOUT_MS,
+      timeout: currentTimeout,
     });
 
   const handleUpload = async () => {
@@ -275,36 +275,42 @@ function App() {
       setError("Please select at least one image.");
       return;
     }
+
     const formData = new FormData();
     files.forEach((f) => formData.append("images", f));
+
     setLoading(true);
     setError("");
     setResult(null);
 
-    try {
-      const response = await postAnalyze(formData);
-      setResult(response.data);
-    } catch (err) {
-      if (isColdStartError(err)) {
-        // Silent one-shot retry. The first POST usually warms the server;
-        // by the time this retry runs the real analysis can proceed.
-        console.warn("Analyze retrying after startup signature:", err?.code || err?.response?.status);
-        await sleep(COLD_START_RETRY_DELAY_MS);
-        try {
-          const response = await postAnalyze(formData);
-          setResult(response.data);
-          setLoading(false);
-          return;
-        } catch (retryErr) {
-          console.error("FULL ERROR (after retry):", retryErr);
-          setError(friendlyErrorMessage(retryErr));
-          setLoading(false);
-          return;
+    let attempt = 0;
+    const maxAttempts = MAX_RETRIES + 1;
+
+    while (attempt < maxAttempts) {
+      try {
+        const response = await postAnalyze(formData);
+        setResult(response.data);
+        setLoading(false);
+        return;                    // Success → exit loop
+      } catch (err) {
+        attempt++;
+        console.warn(`Attempt ${attempt}/${maxAttempts} failed:`, err?.code || err?.message);
+
+        if (attempt < maxAttempts && isColdStartError(err)) {
+          // Progressive delay on cold start (6s → 12s)
+          const delay = attempt * 6000;
+          console.warn(`Cold start detected — retrying in ${delay}ms...`);
+          await sleep(delay);
+          continue;
         }
+
+        // Final failure after all retries
+        console.error("FULL ERROR after retries:", err);
+        setError(friendlyErrorMessage(err));
+        break;
       }
-      console.error("FULL ERROR:", err);
-      setError(friendlyErrorMessage(err));
     }
+
     setLoading(false);
   };
 

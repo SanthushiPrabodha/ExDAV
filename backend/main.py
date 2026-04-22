@@ -1,4 +1,5 @@
 import logging
+import os
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -11,11 +12,22 @@ app = FastAPI()
 logger = logging.getLogger("exdav.backend")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
-# allow React frontend
+# Resolve allowed CORS origins from the EXDAV_ALLOWED_ORIGINS env var
+# (comma-separated list of origins, or "*" for any origin). Browsers reject
+# credentialed responses when the origin is "*", so credentials are only
+# enabled when an explicit allow-list is configured.
+_origins_env = os.environ.get("EXDAV_ALLOWED_ORIGINS", "*").strip() or "*"
+if _origins_env == "*":
+    _allowed_origins = ["*"]
+    _allow_credentials = False
+else:
+    _allowed_origins = [o.strip() for o in _origins_env.split(",") if o.strip()]
+    _allow_credentials = True
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=_allowed_origins,
+    allow_credentials=_allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],
 )

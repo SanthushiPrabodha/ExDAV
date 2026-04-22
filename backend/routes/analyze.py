@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 import uuid
@@ -8,6 +9,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile, status
 from backend.schemas import AnalysisResponse
 from backend.services.pipeline_service import process_images
 
+logger = logging.getLogger("exdav.analyze")
 router = APIRouter(tags=["analysis"])
 
 # Absolute path so uploads work regardless of the CWD at launch time
@@ -65,4 +67,14 @@ async def analyze(
         "manufacturer": expected_manufacturer,
     }
 
-    return process_images(saved_paths, expected_data)
+    try:
+        return process_images(saved_paths, expected_data)
+    finally:
+        # Ephemeral upload storage: the pipeline has already read everything
+        # it needs from disk, so drop the raw images to keep the container's
+        # writable layer from growing unbounded between restarts.
+        for path in saved_paths:
+            try:
+                os.remove(path)
+            except OSError as cleanup_exc:
+                logger.warning("Could not remove upload %s: %s", path, cleanup_exc)

@@ -13,7 +13,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
         tesseract-ocr \
-        libtesseract-dev \
         libglib2.0-0 \
         libsm6 \
         libxrender1 \

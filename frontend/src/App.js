@@ -259,6 +259,7 @@ function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [apiCheck, setApiCheck] = useState("checking");
   const didWarmupRef = useRef(false);
 
   const backendBase = useMemo(() => resolveBackendBaseUrl(), []);
@@ -268,13 +269,13 @@ function App() {
   useEffect(() => {
     if (didWarmupRef.current) return;
     didWarmupRef.current = true;
-    // Fire-and-forget: we don't surface success/failure to the user.
-    // If this succeeds the analyze call will be snappy; if it fails
-    // the analyze call's own retry logic will handle it.
+    // Fire-and-forget warm-up; also record reachability for on-page debugging.
     axios
       .get(healthUrl, { timeout: WARMUP_TIMEOUT_MS })
+      .then(() => setApiCheck("ok"))
       .catch((err) => {
         console.warn("Backend warm-up ping failed:", err?.code || err?.message);
+        setApiCheck(err?.code || err?.message || "failed");
       });
   }, [healthUrl]);
 
@@ -288,11 +289,11 @@ function App() {
     setError("");
   };
 
+  // Do NOT set Content-Type for FormData — the browser must add the
+  // multipart boundary. A bare "multipart/form-data" header breaks uploads
+  // and often surfaces as "Network Error" with no err.response.
   const postAnalyze = (formData, currentTimeout = ANALYZE_TIMEOUT_MS) =>
-    axios.post(analyzeUrl, formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-      timeout: currentTimeout,
-    });
+    axios.post(analyzeUrl, formData, { timeout: currentTimeout });
 
   const handleUpload = async () => {
     if (!files.length) {
@@ -345,10 +346,16 @@ function App() {
       return "We couldn't complete the analysis. Please try again.";
     }
     const hint = [err?.code, err?.message].filter(Boolean).join(" — ");
+    const corsHint =
+      (err?.message || "").toLowerCase().includes("network") ||
+      err?.code === "ERR_NETWORK"
+        ? " On the server, set EXDAV_ALLOWED_ORIGINS to https://ex-dav.vercel.app (or *)."
+        : "";
     return (
       "We couldn't reach the analysis service. " +
       (hint ? `(${hint}) ` : "") +
-      `Trying API: ${baseUrl}. If this is wrong, set REACT_APP_BACKEND_URL on Vercel or edit public/config.js and redeploy.`
+      `Trying API: ${baseUrl}. If this is wrong, set REACT_APP_BACKEND_URL on Vercel or edit public/config.js and redeploy.` +
+      (corsHint ? ` ${corsHint}` : "")
     );
   };
 
@@ -368,6 +375,15 @@ function App() {
           <h2>Upload Drug Package Image(s)</h2>
           <p className="upload-hint">
             Upload 1–5 images of the same package (front, back, sides) for the most complete analysis.
+          </p>
+          <p className="upload-hint api-status-line">
+            API: {backendBase}
+            {" — "}
+            {apiCheck === "checking"
+              ? "checking reachability…"
+              : apiCheck === "ok"
+              ? "reachable"
+              : `unreachable (${apiCheck})`}
           </p>
           <div className="upload-row">
             <input

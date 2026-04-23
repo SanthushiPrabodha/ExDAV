@@ -376,6 +376,13 @@ button:disabled {
   margin: 0 0 0.5rem;
 }
 
+.api-status-line {
+  font-size: 0.78rem;
+  margin: 0 0 0.6rem;
+  color: #4a5d6e;
+  word-break: break-all;
+}
+
 .upload-count {
   font-size: 0.82rem;
   color: #3a6186;

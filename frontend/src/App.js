@@ -303,7 +303,6 @@ function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [apiCheck, setApiCheck] = useState("checking");
   const didWarmupRef = useRef(false);
   const cameraInputRef = useRef(null);
 
@@ -316,14 +315,9 @@ function App() {
   useEffect(() => {
     if (didWarmupRef.current) return;
     didWarmupRef.current = true;
-    // Fire-and-forget warm-up; also record reachability for on-page debugging.
-    axios
-      .get(healthUrl, { timeout: WARMUP_TIMEOUT_MS })
-      .then(() => setApiCheck("ok"))
-      .catch((err) => {
-        console.warn("Backend warm-up ping failed:", err?.code || err?.message);
-        setApiCheck(err?.code || err?.message || "failed");
-      });
+    axios.get(healthUrl, { timeout: WARMUP_TIMEOUT_MS }).catch((err) => {
+      console.warn("Backend warm-up ping failed:", err?.code || err?.message);
+    });
   }, [healthUrl]);
 
   /** Replace selection — multi-select from gallery / files. */
@@ -409,7 +403,7 @@ function App() {
 
         // Final failure after all retries
         console.error("FULL ERROR after retries:", err);
-        setError(friendlyErrorMessage(err, backendBase));
+        setError(friendlyErrorMessage(err));
         break;
       }
     }
@@ -417,29 +411,24 @@ function App() {
     setLoading(false);
   };
 
-  const friendlyErrorMessage = (err, baseUrl) => {
+  const friendlyErrorMessage = (err) => {
     if (err?.response?.data) {
       const exp = err.response.data.explanation;
       if (exp) return Array.isArray(exp) ? exp.join(" ") : exp;
       return "We couldn't complete the analysis. Please try again.";
     }
-    const hint = [err?.code, err?.message].filter(Boolean).join(" — ");
-    const corsHint =
+    // Details for support only — not shown in the UI
+    console.error("Analysis request failed (no HTTP response):", err?.code, err?.message);
+    if (err?.code === "ECONNABORTED") {
+      return "The analysis took too long. Try one smaller image or fewer images, then try again.";
+    }
+    if (
       (err?.message || "").toLowerCase().includes("network") ||
       err?.code === "ERR_NETWORK"
-        ? " On the server, set EXDAV_ALLOWED_ORIGINS to https://ex-dav.vercel.app (or *)."
-        : "";
-    const timeoutHint =
-      err?.code === "ECONNABORTED"
-        ? " The API is very slow or stuck (common on 0.1 vCPU / 256 MB). In Northflank: increase CPU and RAM (try 0.5 vCPU and 1 GB), use smaller images or one image per run, and check service logs during Analyze. You can raise the wait limit with REACT_APP_ANALYZE_TIMEOUT_MS on Vercel (ms)."
-        : "";
-    return (
-      "We couldn't reach the analysis service. " +
-      (hint ? `(${hint}) ` : "") +
-      `Trying API: ${baseUrl}. If this is wrong, set REACT_APP_BACKEND_URL on Vercel or edit public/config.js and redeploy.` +
-      (corsHint ? ` ${corsHint}` : "") +
-      (timeoutHint ? ` ${timeoutHint}` : "")
-    );
+    ) {
+      return "We couldn't connect. Check your internet connection and try again.";
+    }
+    return "We couldn't reach the analysis service. Please try again in a moment.";
   };
 
   const vm = result ? getVerdictMeta(result.verdict) : null;
@@ -457,18 +446,8 @@ function App() {
         <section className="card">
           <h2>Upload Drug Package Image(s)</h2>
           <p className="upload-hint">
-            Add 1–5 images of the same package (front, back, sides). On a phone, use{" "}
-            <strong>Take photo</strong> to capture each side, or <strong>Select images</strong> to
-            choose from your library.
-          </p>
-          <p className="upload-hint api-status-line">
-            API: {backendBase}
-            {" — "}
-            {apiCheck === "checking"
-              ? "checking reachability…"
-              : apiCheck === "ok"
-              ? "reachable"
-              : `unreachable (${apiCheck})`}
+            Add 1–5 images of the same package (front, back, sides) using{" "}
+            <strong>Select images</strong> or <strong>Take photo</strong>.
           </p>
           <div className="upload-row upload-row-actions">
             <input
@@ -531,10 +510,7 @@ function App() {
             <p>
               Running OCR · metadata extraction · ontology mapping · reasoning…
               <br />
-              <span className="processing-note">
-                On a small server this can take several minutes — keep this tab open. If it always
-                times out, increase CPU/RAM on Northflank or use smaller photos.
-              </span>
+              <span className="processing-note">This may take a few minutes — please keep this tab open.</span>
             </p>
           </section>
         )}

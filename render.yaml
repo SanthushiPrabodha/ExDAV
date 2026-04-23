@@ -23,7 +23,11 @@ services:
         value: /usr/bin/tesseract
       # Downscale very large phone photos before OCR (faster on free/small plans).
       - key: EXDAV_MAX_IMAGE_EDGE
-        value: "2000"
+        value: "1280"
+      - key: EXDAV_OCR_API_FAST
+        value: "1"
+      - key: EXDAV_OCR_WORKERS
+        value: "4"
       # Optional: restrict CORS once the frontend origin is known.
       - key: EXDAV_ALLOWED_ORIGINS
         value: "*"

@@ -2,6 +2,7 @@ import logging
 import os
 import re
 import sys
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
 
 # Repo root must be on sys.path before importing sibling backend modules / src
@@ -590,21 +591,42 @@ def _merge_ocr_for_images(image_paths: List[str]) -> Dict[str, Any]:
     """
     from src.ocr.ocr_extract import extract_text  # deferred — heavy import
 
-    per_image = []
+    n = len(image_paths)
+    if n == 0:
+        return {
+            "combined_text": "",
+            "roi_text": "",
+            "any_success": False,
+            "per_image": [],
+        }
+
+    def _ocr_one(path: str) -> Dict[str, Any]:
+        try:
+            return extract_text(path)
+        except Exception as exc:  # noqa: BLE001 — surface per-image failure
+            logger.warning("OCR failed for %s: %s", path, exc)
+            return {"success": False, "text": "", "roi_text": "", "error": str(exc)}
+
+    default_w = min(4, n)
+    try:
+        workers = int((os.environ.get("EXDAV_OCR_WORKERS") or str(default_w)).strip())
+    except ValueError:
+        workers = default_w
+    workers = max(1, min(workers, n, 8))
+
+    by_index: Dict[int, Dict[str, Any]] = {}
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = {pool.submit(_ocr_one, p): i for i, p in enumerate(image_paths)}
+        for fut in as_completed(futures):
+            by_index[futures[fut]] = fut.result()
+    per_image = [by_index[i] for i in range(n)]
+
     texts: List[str] = []
     roi_texts: List[str] = []
-
-    for path in image_paths:
-        try:
-            result = extract_text(path)
-            per_image.append(result)
-            if result.get("text"):
-                texts.append(result["text"])
-            roi_texts.append(result.get("roi_text", "") or "")
-        except Exception as exc:
-            logger.warning("OCR failed for %s: %s", path, exc)
-            per_image.append({"success": False, "text": "", "roi_text": "", "error": str(exc)})
-            roi_texts.append("")
+    for result in per_image:
+        if result.get("text"):
+            texts.append(result["text"])
+        roi_texts.append(result.get("roi_text", "") or "")
 
     combined_text = "\n--- IMAGE BREAK ---\n".join(t for t in texts if t.strip())
     best_roi = max(roi_texts, key=len, default="")

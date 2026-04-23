@@ -3,16 +3,27 @@ import shutil
 import re
 
 import cv2
+import pytesseract
 
 # After cv2 import — max edge in pixels for the loaded image (before ROI). Phone
 # photos are often 12–40 MP; downscaling here cuts OCR time dramatically on small VPS.
 def _max_input_edge() -> int:
-    raw = (os.environ.get("EXDAV_MAX_IMAGE_EDGE", "2000") or "2000").strip()
+    raw = (os.environ.get("EXDAV_MAX_IMAGE_EDGE", "1280") or "1280").strip()
     try:
         n = int(raw)
     except ValueError:
-        n = 2000
+        n = 1280
     return max(800, min(n, 6000))
+
+
+def _api_fast_ocr() -> bool:
+    """
+    When True, skip the heaviest optional passes (side strips, dot-matrix, 180° retry,
+    tighter gray cap). Default ON for deployed API; set EXDAV_OCR_API_FAST=0 for full
+    research pipeline at the cost of speed.
+    """
+    v = (os.environ.get("EXDAV_OCR_API_FAST", "1") or "1").strip().lower()
+    return v in ("1", "true", "yes", "on")
 
 
 def _downscale_bgr_if_large(image, max_edge: int):
@@ -24,7 +35,6 @@ def _downscale_bgr_if_large(image, max_edge: int):
     new_w = max(1, int(w * s))
     new_h = max(1, int(h * s))
     return cv2.resize(image, (new_w, new_h), interpolation=cv2.INTER_AREA)
-import pytesseract
 
 
 # -------------------------------
@@ -149,17 +159,18 @@ def extract_text(image_path):
         roi = image[int(h * 0.15):int(h * 0.85), int(w * 0.05):int(w * 0.95)]
         image = roi
 
+        fast = _api_fast_ocr()
+
         # -----------------------------------------------
         # GRAYSCALE + RESIZE (cubic gives crisper edges)
         # Cap at MAX_DIM on the longer side BEFORE the
         # bilateral filter to keep runtimes reasonable.
-        # High-res phone photos (12–40 MP) otherwise cause
-        # multi-minute processing times.
+        # API fast mode: no 2× upsample, lower cap — much faster on VPS.
         # -----------------------------------------------
-        MAX_DIM = 2000
+        MAX_DIM = 1200 if fast else 2000
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         gh, gw = gray.shape
-        natural_scale = 2.0
+        natural_scale = 1.0 if fast else 2.0
         # Never scale up beyond the point where the longer
         # side exceeds MAX_DIM; downscale if already large.
         capped_scale = min(natural_scale, MAX_DIM / max(gh, gw, 1))
@@ -205,35 +216,37 @@ def extract_text(image_path):
             31, 2,
         )
 
-        # Path C: black-hat applied on CLAHE output (pre-bilateral),
-        # because bilateral can soften the text-background contrast
-        # that black-hat depends on.
-        bh_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (45, 45))
-        gray_bh_raw = cv2.morphologyEx(gray_clahe, cv2.MORPH_BLACKHAT, bh_kernel)
-        gray_bh_raw = cv2.normalize(gray_bh_raw, None, 0, 255, cv2.NORM_MINMAX)
-        _, gray_blackhat = cv2.threshold(
-            gray_bh_raw, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
-        )
+        # Path C (black-hat): optional in API fast mode — saves one heavy Tesseract pass.
+        gray_blackhat = None
+        if not fast:
+            bh_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (45, 45))
+            gray_bh_raw = cv2.morphologyEx(gray_clahe, cv2.MORPH_BLACKHAT, bh_kernel)
+            gray_bh_raw = cv2.normalize(gray_bh_raw, None, 0, 255, cv2.NORM_MINMAX)
+            _, gray_blackhat = cv2.threshold(
+                gray_bh_raw, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
+            )
 
-        gray_otsu    = cv2.morphologyEx(gray_otsu,    cv2.MORPH_OPEN, kernel)
+        gray_otsu = cv2.morphologyEx(gray_otsu, cv2.MORPH_OPEN, kernel)
         gray_adaptive = cv2.morphologyEx(gray_adaptive, cv2.MORPH_OPEN, kernel)
-        gray_blackhat = cv2.morphologyEx(gray_blackhat, cv2.MORPH_OPEN, kernel)
+        if gray_blackhat is not None:
+            gray_blackhat = cv2.morphologyEx(gray_blackhat, cv2.MORPH_OPEN, kernel)
 
         # -----------------------------------------------
         # OCR – PSM 6 (single uniform block) tends to
         # extract label text more completely than PSM 4
         # -----------------------------------------------
         config = r"--oem 3 --psm 6 -l eng"
-        text_a = pytesseract.image_to_string(gray_otsu,    config=config)
+        text_a = pytesseract.image_to_string(gray_otsu, config=config)
         text_b = pytesseract.image_to_string(gray_adaptive, config=config)
-        text_c = pytesseract.image_to_string(gray_blackhat, config=config)
-
-        # Choose the path that produced the most text content
-        candidates = [
-            (text_a, gray_otsu),
-            (text_b, gray_adaptive),
-            (text_c, gray_blackhat),
-        ]
+        if fast:
+            candidates = [(text_a, gray_otsu), (text_b, gray_adaptive)]
+        else:
+            text_c = pytesseract.image_to_string(gray_blackhat, config=config)
+            candidates = [
+                (text_a, gray_otsu),
+                (text_b, gray_adaptive),
+                (text_c, gray_blackhat),
+            ]
         text, best_gray = max(candidates, key=lambda x: len(x[0].strip()))
 
         # -----------------------------------------------
@@ -276,13 +289,15 @@ def extract_text(image_path):
         # -----------------------------------------------
         # DOT-MATRIX SUPPLEMENT — recover batch/MFG/EXP lines
         # that the main pass misses on dotted fonts.
+        # Skipped in API fast mode (extra Tesseract passes).
         # -----------------------------------------------
-        try:
-            dm_raw = _dot_matrix_supplement_ocr(gray)
-            if dm_raw:
-                text = text + "\n" + _clean(dm_raw)
-        except Exception:
-            pass
+        if not fast:
+            try:
+                dm_raw = _dot_matrix_supplement_ocr(gray)
+                if dm_raw:
+                    text = text + "\n" + _clean(dm_raw)
+            except Exception:
+                pass
 
         # -----------------------------------------------
         # SIDE-STRIP ROTATION PASSES
@@ -307,55 +322,55 @@ def extract_text(image_path):
         #      between letter-spaced characters so Tesseract
         #      groups them as whole words.
         # -----------------------------------------------
-        clahe_strip = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+        if not fast:
+            clahe_strip = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+            for (x0_frac, x1_frac), rotate_code in (
+                ((0.0, 0.38), cv2.ROTATE_90_CLOCKWISE),  # left panel
+                ((0.62, 1.0), cv2.ROTATE_90_COUNTERCLOCKWISE),  # right panel
+            ):
+                x0 = int(orig_w * x0_frac)
+                x1 = int(orig_w * x1_frac)
+                strip = image_orig[int(orig_h * 0.05):int(orig_h * 0.95), x0:x1]
+                strip_gray = cv2.cvtColor(strip, cv2.COLOR_BGR2GRAY)
 
-        for (x0_frac, x1_frac), rotate_code in (
-            ((0.0, 0.38), cv2.ROTATE_90_CLOCKWISE),          # left panel
-            ((0.62, 1.0), cv2.ROTATE_90_COUNTERCLOCKWISE),   # right panel
-        ):
-            x0 = int(orig_w * x0_frac)
-            x1 = int(orig_w * x1_frac)
-            strip = image_orig[int(orig_h * 0.05):int(orig_h * 0.95), x0:x1]
-            strip_gray = cv2.cvtColor(strip, cv2.COLOR_BGR2GRAY)
+                # 2× upscale (same as main OCR) — gives Tesseract crisper
+                # edges; avoids the blurring caused by aggressive downscaling.
+                strip_gray = cv2.resize(
+                    strip_gray, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC
+                )
 
-            # 2× upscale (same as main OCR) — gives Tesseract crisper
-            # edges; avoids the blurring caused by aggressive downscaling.
-            strip_gray = cv2.resize(
-                strip_gray, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC
-            )
+                # Contrast enhancement
+                strip_gray = clahe_strip.apply(strip_gray)
 
-            # Contrast enhancement
-            strip_gray = clahe_strip.apply(strip_gray)
+                # Gaussian blur — kernel 7×7 softens the ~20–40 px letter-
+                # spacing gaps found on large-font brand-name text; this
+                # causes adjacent character blobs to touch so Tesseract
+                # groups them as one word instead of individual tokens.
+                strip_gray = cv2.GaussianBlur(strip_gray, (7, 7), 0)
 
-            # Gaussian blur — kernel 7×7 softens the ~20–40 px letter-
-            # spacing gaps found on large-font brand-name text; this
-            # causes adjacent character blobs to touch so Tesseract
-            # groups them as one word instead of individual tokens.
-            strip_gray = cv2.GaussianBlur(strip_gray, (7, 7), 0)
+                # Rotate to make vertical text horizontal
+                strip_gray = cv2.rotate(strip_gray, rotate_code)
 
-            # Rotate to make vertical text horizontal
-            strip_gray = cv2.rotate(strip_gray, rotate_code)
+                # Threshold
+                _, strip_bin = cv2.threshold(
+                    strip_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
+                )
 
-            # Threshold
-            _, strip_bin = cv2.threshold(
-                strip_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
-            )
+                # Auto-invert: white text on dark background → invert to
+                # black-on-white (Tesseract's preferred polarity)
+                white_ratio = cv2.countNonZero(strip_bin) / max(strip_bin.size, 1)
+                if white_ratio < 0.4:
+                    strip_bin = cv2.bitwise_not(strip_bin)
 
-            # Auto-invert: white text on dark background → invert to
-            # black-on-white (Tesseract's preferred polarity)
-            white_ratio = cv2.countNonZero(strip_bin) / max(strip_bin.size, 1)
-            if white_ratio < 0.4:
-                strip_bin = cv2.bitwise_not(strip_bin)
+                # Extra horizontal dilation (25 px) to bridge residual gaps
+                # between letter-spaced characters after blur-threshold.
+                h_kern = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 1))
+                strip_bin = cv2.dilate(strip_bin, h_kern)
 
-            # Extra horizontal dilation (25 px) to bridge residual gaps
-            # between letter-spaced characters after blur-threshold.
-            h_kern = cv2.getStructuringElement(cv2.MORPH_RECT, (25, 1))
-            strip_bin = cv2.dilate(strip_bin, h_kern)
-
-            strip_raw = pytesseract.image_to_string(strip_bin, config=config)
-            strip_clean = _clean(strip_raw)
-            if strip_clean:
-                text = text + "\n" + strip_clean
+                strip_raw = pytesseract.image_to_string(strip_bin, config=config)
+                strip_clean = _clean(strip_raw)
+                if strip_clean:
+                    text = text + "\n" + strip_clean
 
         # -----------------------------------------------
         # 180° ROTATION FALLBACK
@@ -372,7 +387,7 @@ def extract_text(image_path):
         alpha_count = sum(
             1 for t in text.split() if re.match(r"^[A-Za-z]{4,}$", t)
         )
-        if alpha_count < 5:
+        if not fast and alpha_count < 5:
             rot180 = cv2.rotate(best_gray, cv2.ROTATE_180)
             raw180 = pytesseract.image_to_string(rot180, config=config)
             clean180 = _clean(raw180)
@@ -407,28 +422,38 @@ def extract_text(image_path):
 
             if brand_crop.size > 0:
                 b_gray = cv2.cvtColor(brand_crop, cv2.COLOR_BGR2GRAY)
-                b_scale = min(2.0, 2000 / max(b_gray.shape[0], b_gray.shape[1], 1))
-                b_gray = cv2.resize(b_gray, None, fx=b_scale, fy=b_scale,
-                                    interpolation=cv2.INTER_CUBIC)
+                # API fast: one threshold + one Tesseract; cap upscale for speed
+                b_cap = 1400 if fast else 2000
+                b_up = 1.35 if fast else 2.0
+                b_scale = min(b_up, b_cap / max(b_gray.shape[0], b_gray.shape[1], 1))
+                b_gray = cv2.resize(
+                    b_gray, None, fx=b_scale, fy=b_scale, interpolation=cv2.INTER_CUBIC
+                )
                 b_clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
                 b_gray = b_clahe.apply(b_gray)
                 b_gray = cv2.bilateralFilter(b_gray, 9, 75, 75)
 
-                # Try all three threshold paths used in the main pass
                 _, b_otsu = cv2.threshold(
                     b_gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
                 )
-                bh_kern = cv2.getStructuringElement(cv2.MORPH_RECT, (45, 45))
-                b_bh_raw = cv2.morphologyEx(b_gray, cv2.MORPH_BLACKHAT, bh_kern)
-                b_bh_raw = cv2.normalize(b_bh_raw, None, 0, 255, cv2.NORM_MINMAX)
-                _, b_bh = cv2.threshold(
-                    b_bh_raw, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
-                )
+                if fast:
+                    roi_text = _clean(
+                        pytesseract.image_to_string(b_otsu, config=config)
+                    )
+                else:
+                    bh_kern = cv2.getStructuringElement(cv2.MORPH_RECT, (45, 45))
+                    b_bh_raw = cv2.morphologyEx(b_gray, cv2.MORPH_BLACKHAT, bh_kern)
+                    b_bh_raw = cv2.normalize(b_bh_raw, None, 0, 255, cv2.NORM_MINMAX)
+                    _, b_bh = cv2.threshold(
+                        b_bh_raw, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
+                    )
 
-                roi_a = pytesseract.image_to_string(b_otsu, config=config)
-                roi_b = pytesseract.image_to_string(b_bh, config=config)
-                roi_raw = roi_a if len(roi_a.strip()) >= len(roi_b.strip()) else roi_b
-                roi_text = _clean(roi_raw)
+                    roi_a = pytesseract.image_to_string(b_otsu, config=config)
+                    roi_b = pytesseract.image_to_string(b_bh, config=config)
+                    roi_raw = (
+                        roi_a if len(roi_a.strip()) >= len(roi_b.strip()) else roi_b
+                    )
+                    roi_text = _clean(roi_raw)
             else:
                 roi_text = ""
         except Exception:

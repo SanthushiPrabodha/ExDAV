@@ -1,12 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import axios from "axios";
 import "./App.css";
 
-const BACKEND_BASE_URL = (
-  process.env.REACT_APP_BACKEND_URL || "http://127.0.0.1:8000"
-).replace(/\/$/, "");
-const BACKEND_URL = `${BACKEND_BASE_URL}/analyze`;
-const BACKEND_HEALTH_URL = `${BACKEND_BASE_URL}/`;
+// Production default when REACT_APP_BACKEND_URL was not set at build time
+// (Vercel env misconfiguration). Override via Vercel env, public/config.js, or
+// window.__EXDAV_BACKEND_URL__.
+const VERCEL_HOST_DEFAULT_BACKEND = "https://p01--exdav--2rlz8sczq2qc.code.run";
+
+/**
+ * API origin (no trailing slash). Resolution order:
+ *   1. REACT_APP_BACKEND_URL (build-time)
+ *   2. window.__EXDAV_BACKEND_URL__ (runtime, set in public/config.js)
+ *   3. When served from ex-dav.vercel.app and no env — Northflank default above
+ *   4. Local dev fallback
+ */
+function resolveBackendBaseUrl() {
+  const fromEnv = (process.env.REACT_APP_BACKEND_URL || "").trim().replace(/\/$/, "");
+  if (fromEnv) return fromEnv;
+
+  if (typeof window !== "undefined") {
+    const w = (window.__EXDAV_BACKEND_URL__ || "").toString().trim().replace(/\/$/, "");
+    if (w) return w;
+    if (window.location && window.location.hostname === "ex-dav.vercel.app") {
+      return VERCEL_HOST_DEFAULT_BACKEND.replace(/\/$/, "");
+    }
+  }
+  return "http://127.0.0.1:8000";
+}
 
 // Silent warm-up + cold-start handling for Render free tier.
 // The backend can take 30–90+ seconds to wake up, then run heavy OCR/reasoning.
@@ -241,6 +261,10 @@ function App() {
   const [error, setError] = useState("");
   const didWarmupRef = useRef(false);
 
+  const backendBase = useMemo(() => resolveBackendBaseUrl(), []);
+  const analyzeUrl = `${backendBase}/analyze`;
+  const healthUrl = `${backendBase}/`;
+
   useEffect(() => {
     if (didWarmupRef.current) return;
     didWarmupRef.current = true;
@@ -248,11 +272,11 @@ function App() {
     // If this succeeds the analyze call will be snappy; if it fails
     // the analyze call's own retry logic will handle it.
     axios
-      .get(BACKEND_HEALTH_URL, { timeout: WARMUP_TIMEOUT_MS })
+      .get(healthUrl, { timeout: WARMUP_TIMEOUT_MS })
       .catch((err) => {
         console.warn("Backend warm-up ping failed:", err?.code || err?.message);
       });
-  }, []);
+  }, [healthUrl]);
 
   const handleFileChange = (e) => {
     const selected = Array.from(e.target.files || []);
@@ -265,7 +289,7 @@ function App() {
   };
 
   const postAnalyze = (formData, currentTimeout = ANALYZE_TIMEOUT_MS) =>
-    axios.post(BACKEND_URL, formData, {
+    axios.post(analyzeUrl, formData, {
       headers: { "Content-Type": "multipart/form-data" },
       timeout: currentTimeout,
     });
@@ -306,7 +330,7 @@ function App() {
 
         // Final failure after all retries
         console.error("FULL ERROR after retries:", err);
-        setError(friendlyErrorMessage(err));
+        setError(friendlyErrorMessage(err, backendBase));
         break;
       }
     }
@@ -314,13 +338,18 @@ function App() {
     setLoading(false);
   };
 
-  const friendlyErrorMessage = (err) => {
+  const friendlyErrorMessage = (err, baseUrl) => {
     if (err?.response?.data) {
       const exp = err.response.data.explanation;
       if (exp) return Array.isArray(exp) ? exp.join(" ") : exp;
       return "We couldn't complete the analysis. Please try again.";
     }
-    return "We couldn't reach the analysis service. Please check your connection and try again in a moment.";
+    const hint = [err?.code, err?.message].filter(Boolean).join(" — ");
+    return (
+      "We couldn't reach the analysis service. " +
+      (hint ? `(${hint}) ` : "") +
+      `Trying API: ${baseUrl}. If this is wrong, set REACT_APP_BACKEND_URL on Vercel or edit public/config.js and redeploy.`
+    );
   };
 
   const vm = result ? getVerdictMeta(result.verdict) : null;

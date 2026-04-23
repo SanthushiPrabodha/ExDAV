@@ -268,6 +268,9 @@ function App() {
   const [error, setError] = useState("");
   const [apiCheck, setApiCheck] = useState("checking");
   const didWarmupRef = useRef(false);
+  const cameraInputRef = useRef(null);
+
+  const _MAX_IMAGES = 5;
 
   const backendBase = useMemo(() => resolveBackendBaseUrl(), []);
   const analyzeUrl = `${backendBase}/analyze`;
@@ -286,13 +289,44 @@ function App() {
       });
   }, [healthUrl]);
 
-  const handleFileChange = (e) => {
+  /** Replace selection — multi-select from gallery / files. */
+  const handleGalleryChange = (e) => {
     const selected = Array.from(e.target.files || []);
-    if (selected.length > 5) {
-      setError("Maximum 5 images allowed. Please select up to 5 images.");
-      return;
+    e.target.value = "";
+    if (!selected.length) return;
+    if (selected.length > _MAX_IMAGES) {
+      setError(`Maximum ${_MAX_IMAGES} images allowed. Only the first ${_MAX_IMAGES} were kept.`);
+      setFiles(selected.slice(0, _MAX_IMAGES));
+    } else {
+      setFiles(selected);
+      setError("");
     }
-    setFiles(selected);
+  };
+
+  /** Append one (or more) photos — used after camera capture on phones. */
+  const handleCameraAdd = (e) => {
+    const added = Array.from(e.target.files || []);
+    e.target.value = "";
+    if (!added.length) return;
+    setFiles((prev) => {
+      const combined = [...prev, ...added];
+      if (combined.length > _MAX_IMAGES) {
+        setError(
+          `Maximum ${_MAX_IMAGES} images. ${combined.length - _MAX_IMAGES} photo(s) not added.`
+        );
+        return combined.slice(0, _MAX_IMAGES);
+      }
+      setError("");
+      return combined;
+    });
+  };
+
+  const openCamera = () => {
+    cameraInputRef.current?.click();
+  };
+
+  const clearImages = () => {
+    setFiles([]);
     setError("");
   };
 
@@ -304,7 +338,7 @@ function App() {
 
   const handleUpload = async () => {
     if (!files.length) {
-      setError("Please select at least one image.");
+      setError("Please add at least one image (gallery or camera).");
       return;
     }
 
@@ -386,7 +420,9 @@ function App() {
         <section className="card">
           <h2>Upload Drug Package Image(s)</h2>
           <p className="upload-hint">
-            Upload 1–5 images of the same package (front, back, sides) for the most complete analysis.
+            Add 1–5 images of the same package (front, back, sides). On a phone, use{" "}
+            <strong>Take photo</strong> to capture each side, or <strong>Gallery</strong> to pick
+            from your library.
           </p>
           <p className="upload-hint api-status-line">
             API: {backendBase}
@@ -397,20 +433,48 @@ function App() {
               ? "reachable"
               : `unreachable (${apiCheck})`}
           </p>
-          <div className="upload-row">
+          <div className="upload-row upload-row-actions">
             <input
+              id="exdav-gallery-input"
+              className="file-input-hidden"
               type="file"
               accept="image/*"
               multiple
-              onChange={handleFileChange}
+              onChange={handleGalleryChange}
             />
-            <button onClick={handleUpload} disabled={loading}>
+            <input
+              ref={cameraInputRef}
+              id="exdav-camera-input"
+              className="file-input-hidden"
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleCameraAdd}
+            />
+            <label htmlFor="exdav-gallery-input" className="btn btn-secondary">
+              Gallery
+            </label>
+            <button
+              type="button"
+              className="btn btn-camera"
+              onClick={openCamera}
+              disabled={loading || files.length >= _MAX_IMAGES}
+              aria-label="Open camera to take a photo"
+            >
+              Take photo
+            </button>
+            {files.length > 0 && (
+              <button type="button" className="btn btn-ghost" onClick={clearImages} disabled={loading}>
+                Clear all
+              </button>
+            )}
+            <button className="btn btn-primary" onClick={handleUpload} disabled={loading}>
               {loading ? "Analyzing..." : "Analyze"}
             </button>
           </div>
           {files.length > 0 && (
             <p className="upload-count">
-              {files.length} image{files.length > 1 ? "s" : ""} selected:{" "}
+              {files.length} / {_MAX_IMAGES} image{files.length > 1 ? "s" : ""}:{" "}
               {files.map((f) => f.name).join(", ")}
             </p>
           )}

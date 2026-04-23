@@ -123,26 +123,99 @@ h3 {
   flex-wrap: wrap;
 }
 
-input[type="file"] {
+.upload-row-actions {
+  align-items: stretch;
+}
+
+/* Only style visible file inputs; hidden ones use .file-input-hidden */
+input[type="file"]:not(.file-input-hidden) {
   border: 1px solid #b3c7e2;
   border-radius: 8px;
   padding: 0.5rem;
   background: #f8fbff;
 }
 
-button {
+.file-input-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+button,
+.btn {
   border: none;
   border-radius: 8px;
-  background: #0070e0;
-  color: white;
   font-weight: 600;
   padding: 0.6rem 1rem;
   cursor: pointer;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  -webkit-tap-highlight-color: transparent;
 }
 
-button:disabled {
-  background: #98b8de;
+button:disabled,
+.btn:disabled {
   cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.btn-primary,
+button.btn-primary {
+  background: #0070e0;
+  color: white;
+}
+
+.btn-primary:disabled,
+button.btn-primary:disabled {
+  background: #98b8de;
+  opacity: 1;
+}
+
+.btn-secondary {
+  background: #e8f1fb;
+  color: #0a4a8c;
+  border: 1px solid #b3c7e2;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #dceaf8;
+}
+
+.btn-camera {
+  background: #0a7a5a;
+  color: #fff;
+}
+
+.btn-camera:hover:not(:disabled) {
+  background: #088a65;
+}
+
+.btn-camera:disabled {
+  background: #8fb8aa;
+  opacity: 0.6;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #446288;
+  border: 1px dashed #a8bdd9;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background: #f0f6fc;
+}
+
+label.btn {
+  margin: 0;
 }
 
 .processing {

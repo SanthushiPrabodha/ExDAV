@@ -53,17 +53,13 @@ def _build_explanation_list(
     return explanation
 
 
-def run_pipeline(image_path: str) -> Dict[str, Any]:
+def run_pipeline_from_ocr(ocr_result: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Run the full Ex-DAV interim pipeline for one image.
+    Run validation / ontology / reasoning on a completed extract_text() result.
 
-    Args:
-        image_path: Input drug packaging image path.
-
-    Returns:
-        dict: Final structured JSON-ready output.
+    Used to avoid a duplicate OCR pass on the first image when multiple images
+    are processed (process_images already merged per-image OCR).
     """
-    ocr_result = extract_text(image_path)
     metadata = parse_metadata(
         ocr_result.get("text", ""),
         roi_text=ocr_result.get("roi_text", ""),
@@ -94,10 +90,23 @@ def run_pipeline(image_path: str) -> Dict[str, Any]:
         },
         "validation_issues": validation_result.get("issues", []),
         "semantic_flags": _semantic_flags_list(reasoning_result),
-        # Expose raw pipeline artefacts so callers avoid a second OCR pass
         "ocr_text": ocr_result.get("text", ""),
         "ocr_success": bool(ocr_result.get("success")),
         "full_metadata": metadata,
         "completeness_score": float(validation_result.get("completeness_score", 0.0)),
     }
+
+
+def run_pipeline(image_path: str) -> Dict[str, Any]:
+    """
+    Run the full Ex-DAV interim pipeline for one image.
+
+    Args:
+        image_path: Input drug packaging image path.
+
+    Returns:
+        dict: Final structured JSON-ready output.
+    """
+    ocr_result = extract_text(image_path)
+    return run_pipeline_from_ocr(ocr_result)
 

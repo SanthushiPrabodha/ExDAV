@@ -3,6 +3,27 @@ import shutil
 import re
 
 import cv2
+
+# After cv2 import — max edge in pixels for the loaded image (before ROI). Phone
+# photos are often 12–40 MP; downscaling here cuts OCR time dramatically on small VPS.
+def _max_input_edge() -> int:
+    raw = (os.environ.get("EXDAV_MAX_IMAGE_EDGE", "2000") or "2000").strip()
+    try:
+        n = int(raw)
+    except ValueError:
+        n = 2000
+    return max(800, min(n, 6000))
+
+
+def _downscale_bgr_if_large(image, max_edge: int):
+    h, w = image.shape[:2]
+    m = max(h, w, 1)
+    if m <= max_edge:
+        return image
+    s = max_edge / float(m)
+    new_w = max(1, int(w * s))
+    new_h = max(1, int(h * s))
+    return cv2.resize(image, (new_w, new_h), interpolation=cv2.INTER_AREA)
 import pytesseract
 
 
@@ -112,6 +133,9 @@ def extract_text(image_path):
     if image is None:
         result["error"] = f"Unable to read image: {image_path}"
         return result
+
+    # Shrink very large camera rolls before any ROI/CLAHE work (huge win on multi-image + VPS).
+    image = _downscale_bgr_if_large(image, _max_input_edge())
 
     try:
         # -----------------------------------------------

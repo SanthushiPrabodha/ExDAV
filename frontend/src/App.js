@@ -72,11 +72,11 @@ function IconCamera() {
 const WARMUP_TIMEOUT_MS = 90000; // health-check timeout
 
 // Single POST /analyze can run a long time on a small VPS (OCR + OpenCV + reasoning).
-// Default 15 min; override at build time with REACT_APP_ANALYZE_TIMEOUT_MS (milliseconds).
-const _rawAnalyzeTimeout = (process.env.REACT_APP_ANALYZE_TIMEOUT_MS || "900000").trim();
+// Default 20 min; override at build time with REACT_APP_ANALYZE_TIMEOUT_MS (milliseconds).
+const _rawAnalyzeTimeout = (process.env.REACT_APP_ANALYZE_TIMEOUT_MS || "1200000").trim();
 const _parsedTimeout = parseInt(_rawAnalyzeTimeout, 10);
 const ANALYZE_TIMEOUT_MS =
-  Number.isFinite(_parsedTimeout) && _parsedTimeout >= 120000 ? _parsedTimeout : 900000;
+  Number.isFinite(_parsedTimeout) && _parsedTimeout >= 120000 ? _parsedTimeout : 1200000;
 
 const MAX_RETRIES = 2; // up to 2 retries = 3 total attempts
 

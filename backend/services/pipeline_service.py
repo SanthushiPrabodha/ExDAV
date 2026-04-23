@@ -762,7 +762,7 @@ def process_images(
         }
 
     try:
-        from src.pipeline.run_pipeline import run_pipeline
+        from src.pipeline.run_pipeline import run_pipeline, run_pipeline_from_ocr
         from src.ocr.metadata_validate import (
             extract_expiry_date_from_text,
             extract_manufactured_date_from_text,
@@ -823,8 +823,11 @@ def process_images(
         ocr_success = merged_ocr["any_success"]
         roi_text = merged_ocr["roi_text"]
 
-        # Run the full pipeline on the FIRST valid image for reasoning/verdict
-        base_result = run_pipeline(image_path=valid_paths[0])
+        # Reuse OCR from the first image (already done in _merge_ocr_for_images) —
+        # avoids running extract_text() twice on the same file.
+        per = merged_ocr.get("per_image") or []
+        ocr_first = per[0] if per else {"success": False, "text": "", "roi_text": ""}
+        base_result = run_pipeline_from_ocr(ocr_first)
 
         # Re-parse metadata using ALL combined OCR to fill in fields that
         # might only appear on other images (batch from side panel etc.)

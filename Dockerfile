@@ -6,7 +6,8 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    TESSERACT_CMD=/usr/bin/tesseract
+    TESSERACT_CMD=/usr/bin/tesseract \
+    EXDAV_MAX_IMAGE_EDGE=2000
 
 # System deps: tesseract for OCR, libgl/libglib for OpenCV (headless wheel
 # still benefits from having libglib available for some codecs).

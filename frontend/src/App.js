@@ -32,9 +32,16 @@ function resolveBackendBaseUrl() {
 // The backend can take 30–90+ seconds to wake up, then run heavy OCR/reasoning.
 // We warm the service on mount; the analyze call retries with a progressive
 // delay so the user never sees infrastructure details.
-const WARMUP_TIMEOUT_MS = 90000;    // health-check timeout
-const ANALYZE_TIMEOUT_MS = 300000;  // single analyze attempt timeout (5 min)
-const MAX_RETRIES = 2;              // up to 2 retries = 3 total attempts
+const WARMUP_TIMEOUT_MS = 90000; // health-check timeout
+
+// Single POST /analyze can run a long time on a small VPS (OCR + OpenCV + reasoning).
+// Default 15 min; override at build time with REACT_APP_ANALYZE_TIMEOUT_MS (milliseconds).
+const _rawAnalyzeTimeout = (process.env.REACT_APP_ANALYZE_TIMEOUT_MS || "900000").trim();
+const _parsedTimeout = parseInt(_rawAnalyzeTimeout, 10);
+const ANALYZE_TIMEOUT_MS =
+  Number.isFinite(_parsedTimeout) && _parsedTimeout >= 120000 ? _parsedTimeout : 900000;
+
+const MAX_RETRIES = 2; // up to 2 retries = 3 total attempts
 
 const VERDICT_META = {
   authentic:    { cls: "verdict-authentic",    icon: "✔", label: "Authentic" },
@@ -351,11 +358,16 @@ function App() {
       err?.code === "ERR_NETWORK"
         ? " On the server, set EXDAV_ALLOWED_ORIGINS to https://ex-dav.vercel.app (or *)."
         : "";
+    const timeoutHint =
+      err?.code === "ECONNABORTED"
+        ? " The API is very slow or stuck (common on 0.1 vCPU / 256 MB). In Northflank: increase CPU and RAM (try 0.5 vCPU and 1 GB), use smaller images or one image per run, and check service logs during Analyze. You can raise the wait limit with REACT_APP_ANALYZE_TIMEOUT_MS on Vercel (ms)."
+        : "";
     return (
       "We couldn't reach the analysis service. " +
       (hint ? `(${hint}) ` : "") +
       `Trying API: ${baseUrl}. If this is wrong, set REACT_APP_BACKEND_URL on Vercel or edit public/config.js and redeploy.` +
-      (corsHint ? ` ${corsHint}` : "")
+      (corsHint ? ` ${corsHint}` : "") +
+      (timeoutHint ? ` ${timeoutHint}` : "")
     );
   };
 
@@ -409,7 +421,14 @@ function App() {
         {loading && (
           <section className="card processing">
             <div className="spinner" />
-            <p>Running OCR · metadata extraction · ontology mapping · reasoning…</p>
+            <p>
+              Running OCR · metadata extraction · ontology mapping · reasoning…
+              <br />
+              <span className="processing-note">
+                On a small server this can take several minutes — keep this tab open. If it always
+                times out, increase CPU/RAM on Northflank or use smaller photos.
+              </span>
+            </p>
           </section>
         )}
 

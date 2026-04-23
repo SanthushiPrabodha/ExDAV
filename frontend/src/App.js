@@ -28,6 +28,43 @@ function resolveBackendBaseUrl() {
   return "http://127.0.0.1:8000";
 }
 
+function IconSelectImages() {
+  return (
+    <svg
+      className="btn-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <polyline points="21 15 16 10 5 21" />
+    </svg>
+  );
+}
+
+function IconCamera() {
+  return (
+    <svg
+      className="btn-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+      <circle cx="12" cy="13" r="4" />
+    </svg>
+  );
+}
+
 // Silent warm-up + cold-start handling for Render free tier.
 // The backend can take 30–90+ seconds to wake up, then run heavy OCR/reasoning.
 // We warm the service on mount; the analyze call retries with a progressive
@@ -421,8 +458,8 @@ function App() {
           <h2>Upload Drug Package Image(s)</h2>
           <p className="upload-hint">
             Add 1–5 images of the same package (front, back, sides). On a phone, use{" "}
-            <strong>Take photo</strong> to capture each side, or <strong>Gallery</strong> to pick
-            from your library.
+            <strong>Take photo</strong> to capture each side, or <strong>Select images</strong> to
+            choose from your library.
           </p>
           <p className="upload-hint api-status-line">
             API: {backendBase}
@@ -452,7 +489,10 @@ function App() {
               onChange={handleCameraAdd}
             />
             <label htmlFor="exdav-gallery-input" className="btn btn-secondary">
-              Gallery
+              <span className="btn-label-inner">
+                <IconSelectImages />
+                <span>Select images</span>
+              </span>
             </label>
             <button
               type="button"
@@ -461,7 +501,10 @@ function App() {
               disabled={loading || files.length >= _MAX_IMAGES}
               aria-label="Open camera to take a photo"
             >
-              Take photo
+              <span className="btn-label-inner">
+                <IconCamera />
+                <span>Take photo</span>
+              </span>
             </button>
             {files.length > 0 && (
               <button type="button" className="btn btn-ghost" onClick={clearImages} disabled={loading}>
